@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Playwright/Electron bug-hunting harness for the Cursor editor",
   "engines": { "node": ">=22.0.0" },
+  "type": "module",
   "private": true,
   "scripts": {
     "test": "playwright test",
