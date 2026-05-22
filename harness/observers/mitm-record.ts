@@ -1,53 +1,80 @@
-import { execaCommand } from "execa";
+import os from "node:os";
+import path from "node:path";
+
+import { execa } from "execa";
 
 import { logger } from "../util/logger.js";
 
 export interface MitmHandle {
-  /** Stop the mitmdump process and wait for it to exit. */
-  stop(): Promise<void>;
-  /** Path to the mitmproxy flow file being written. */
+  pid: number;
   flowPath: string;
+  /** Stop mitmdump gracefully (SIGTERM → SIGKILL after 5 s). Always resolves. */
+  stop(): Promise<void>;
+}
+
+export class MitmCaMissingError extends Error {
+  constructor() {
+    super(
+      "mitmproxy CA certificate not found at ~/.mitmproxy/mitmproxy-ca-cert.pem. " +
+        "Install it once with:\n" +
+        "  security add-trusted-cert -d -r trustRoot \\\n" +
+        "    -k ~/Library/Keychains/login.keychain-db \\\n" +
+        "    ~/.mitmproxy/mitmproxy-ca-cert.pem\n" +
+        "See docs/ARCHITECTURE.md for the full walkthrough.",
+    );
+    this.name = "MitmCaMissingError";
+  }
+}
+
+/** Verify the mitmproxy CA cert exists in the user's home directory. */
+async function assertCaTrusted(): Promise<void> {
+  const certPath = path.join(os.homedir(), ".mitmproxy", "mitmproxy-ca-cert.pem");
+  try {
+    await import("node:fs/promises").then((m) => m.access(certPath));
+  } catch {
+    throw new MitmCaMissingError();
+  }
 }
 
 /**
- * Spawn mitmdump in transparent local mode targeting Cursor, writing flows to
- * flowPath. Bails with a clear error if the mitmproxy CA is not trusted by
- * macOS — see docs/ARCHITECTURE.md for the keychain install command.
+ * Spawn mitmdump in transparent local mode targeting Cursor, writing all
+ * captured flows to flowPath. Bails with MitmCaMissingError if the CA is absent.
+ *
+ * Requires mitmproxy 10+ for --mode local:<process>.
  */
-export async function startMitmRecord(flowPath: string): Promise<MitmHandle> {
-  // Verify the CA is installed before spawning, to surface the error cleanly.
+export async function recordCursorTraffic(flowPath: string): Promise<MitmHandle> {
   await assertCaTrusted();
 
-  const proc = execaCommand(
-    `mitmdump --mode local:Cursor --set save_stream_file=${flowPath}`,
-    { reject: false, all: true }
+  const proc = execa(
+    "mitmdump",
+    ["--mode", "local:Cursor", `--save-stream-file`, flowPath, "-q"],
+    { reject: false, all: true },
   );
 
-  logger.info({ flowPath }, "mitm-record started");
+  const pid = proc.pid ?? 0;
+  logger.info({ pid, flowPath }, "mitm-record: started");
 
-  return {
-    flowPath,
-    stop: async () => {
-      proc.kill("SIGTERM");
+  let stopped = false;
+
+  const stop = async (): Promise<void> => {
+    if (stopped) return;
+    stopped = true;
+
+    proc.kill("SIGTERM");
+
+    const killTimer = setTimeout(() => {
+      if (!proc.killed) proc.kill("SIGKILL");
+    }, 5_000);
+
+    try {
       await proc;
-      logger.info({ flowPath }, "mitm-record stopped");
-    },
+    } catch {
+      // Swallow — process may have already exited.
+    } finally {
+      clearTimeout(killTimer);
+      logger.info({ pid, flowPath }, "mitm-record: stopped");
+    }
   };
-}
 
-/** Verify the mitmproxy CA certificate is trusted in the macOS System keychain. */
-async function assertCaTrusted(): Promise<void> {
-  const { stdout, exitCode } = await execaCommand(
-    'security find-certificate -c mitmproxy -p /Library/Keychains/System.keychain',
-    { reject: false }
-  );
-
-  if (exitCode !== 0 || !stdout.includes("BEGIN CERTIFICATE")) {
-    throw new Error(
-      "mitmproxy CA not found in macOS System keychain. " +
-        "Install it with: sudo security add-trusted-cert -d -r trustRoot " +
-        "-k /Library/Keychains/System.keychain ~/.mitmproxy/mitmproxy-ca-cert.pem " +
-        "(see docs/ARCHITECTURE.md)"
-    );
-  }
+  return { pid, flowPath, stop };
 }
