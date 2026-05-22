@@ -1,0 +1,81 @@
+# -- Secrets ------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+
+# -- Telegram audit log (per-machine, may contain chat ids) -------------------
+data/
+!data/.gitkeep
+
+# -- Node ---------------------------------------------------------------------
+node_modules/
+worktrees/*/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+.pnpm-debug.log*
+
+# -- Python -------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.venv/
+venv/
+.python-version
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# -- Playwright ---------------------------------------------------------------
+playwright-report/
+test-results/
+blob-report/
+.last-run.json
+
+# -- mitmproxy ----------------------------------------------------------------
+*.mitm
+*.flow
+mitmproxy/
+.mitmproxy/
+
+# -- Heap & perf snapshots ----------------------------------------------------
+*.heapsnapshot
+*.cpuprofile
+*.spindump
+*.sample.txt
+
+# -- VM images & Tart state ---------------------------------------------------
+vms/tart/state/
+*.qcow2
+*.img
+*.ipsw
+
+# -- macOS junk ---------------------------------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# -- IDEs ---------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# -- Cowork stage probe (only present before Stage 0 completes) ---------------
+.cowork-stage0-probe
+
+# -- Build artefacts (the PDF is allowed; intermediates are not) --------------
+dist/
+build/
+voc/reports/_intermediate/
+
+# -- Ollama local models cache, if anyone foot-guns it into the repo ----------
+.ollama/
+
+# -- Docker volume mounts -----------------------------------------------------
+voc/dashboard/_pgdata/
+voc/dashboard/_metabase/
