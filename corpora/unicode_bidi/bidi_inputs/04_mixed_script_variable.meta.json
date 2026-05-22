@@ -1,0 +1,7 @@
+{
+  "id": "04_mixed_script_variable",
+  "technique": "Mixed-script confusable identifiers: Cyrillic 'а' vs Latin 'a' in variable name",
+  "visible_text": "usernаme = 'alice'  AND  username = 'attacker'",
+  "hidden_text": "The Cyrillic-named variable shadows the Latin one; print(username) is the attacker string",
+  "risk": "Static analysis tools that don't normalise Unicode may miss the shadow declaration"
+}
