@@ -1,50 +1,56 @@
-import fs from "node:fs/promises";
-import path from "node:path";
+import { appendFile, mkdir } from "node:fs/promises";
+import { dirname } from "node:path";
 
 import chokidar from "chokidar";
 
 import { logger } from "../util/logger.js";
 
 export interface FsEvent {
-  event: "add" | "change" | "unlink";
-  filePath: string;
   ts: string;
+  kind: "add" | "change" | "unlink" | "addDir" | "unlinkDir";
+  path: string;
+  size?: number;
 }
 
-/** Watch a directory tree and record add/change/unlink events to a JSONL file. */
-export function watchDir(
+/**
+ * Watch a directory tree and append add/change/unlink/addDir/unlinkDir events
+ * to a JSONL file. Returns a stopper that cleanly closes the watcher.
+ */
+export async function watchDir(
   watchPath: string,
-  outJsonl: string
-): () => Promise<void> {
+  outJsonl: string,
+  opts: { ignoreInitial?: boolean } = {},
+): Promise<() => Promise<void>> {
+  await mkdir(dirname(outJsonl), { recursive: true });
+
   const watcher = chokidar.watch(watchPath, {
+    ignoreInitial: opts.ignoreInitial ?? true,
     persistent: true,
-    ignoreInitial: true,
-    awaitWriteFinish: { stabilityThreshold: 200, pollInterval: 50 },
+    awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 },
   });
 
-  const appendEvent = async (event: FsEvent): Promise<void> => {
-    await fs.appendFile(outJsonl, JSON.stringify(event) + "\n", "utf8");
+  const write = async (
+    kind: FsEvent["kind"],
+    p: string,
+    stats?: { size: number },
+  ): Promise<void> => {
+    const event: FsEvent = {
+      ts: new Date().toISOString(),
+      kind,
+      path: p,
+      ...(stats ? { size: stats.size } : {}),
+    };
+    await appendFile(outJsonl, JSON.stringify(event) + "\n");
     logger.debug(event, "fs-watch event");
   };
 
-  const handler =
-    (event: "add" | "change" | "unlink") =>
-    (filePath: string): void => {
-      const record: FsEvent = {
-        event,
-        filePath: path.resolve(filePath),
-        ts: new Date().toISOString(),
-      };
-      void appendEvent(record);
-    };
-
-  watcher.on("add", handler("add"));
-  watcher.on("change", handler("change"));
-  watcher.on("unlink", handler("unlink"));
-
-  watcher.on("error", (err: unknown) => {
-    logger.error({ err }, "fs-watch error");
-  });
+  watcher
+    .on("add", (p, s) => void write("add", p, s ? { size: s.size } : undefined))
+    .on("change", (p, s) => void write("change", p, s ? { size: s.size } : undefined))
+    .on("unlink", (p) => void write("unlink", p))
+    .on("addDir", (p) => void write("addDir", p))
+    .on("unlinkDir", (p) => void write("unlinkDir", p))
+    .on("error", (e) => logger.error({ err: e }, "fs-watch error"));
 
   logger.info({ watchPath, outJsonl }, "fs-watch started");
 
