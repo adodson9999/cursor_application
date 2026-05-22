@@ -1,33 +1,42 @@
-import fs from "node:fs/promises";
+import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 
-import { BugContext } from "./bug-md.js";
+import type { BugContext } from "./bug-md.js";
 
-export interface VocBugEvent {
-  agent: "claude-code";
-  source: "harness-test-failure";
-  testId: string;
-  testTitle: string;
-  status: string;
-  errorMessage: string;
+const DEFAULT_VOC_PATH = "data/voc-bugs.jsonl";
+
+export interface VocBugRecord {
   ts: string;
+  source: "harness";
+  severity: null;
+  test_id: string;
+  title: string;
+  error_message: string;
+  artefact_count: number;
 }
 
-/** Append a test-failure bug event to the VoC JSONL pipeline file. */
-export async function appendBugEvent(
+/**
+ * Append one VoC bug record to the shared pipeline JSONL file. The schema
+ * mirrors VoC posts so harness failures and user complaints land in the same
+ * dashboard joined on `source`.
+ */
+export async function appendBug(
   ctx: BugContext,
-  outPath: string = "data/voc-bugs.jsonl"
+  outPath: string = DEFAULT_VOC_PATH,
 ): Promise<void> {
-  const record: VocBugEvent = {
-    agent: "claude-code",
-    source: "harness-test-failure",
-    testId: ctx.testId,
-    testTitle: ctx.testTitle,
-    status: ctx.status,
-    errorMessage: ctx.errorMessage,
+  await mkdir(path.dirname(outPath), { recursive: true });
+
+  const artefactCount = Object.values(ctx.observerArtefacts).filter(Boolean).length;
+
+  const record: VocBugRecord = {
     ts: new Date().toISOString(),
+    source: "harness",
+    severity: null,
+    test_id: ctx.testId,
+    title: ctx.testTitle,
+    error_message: ctx.error.message,
+    artefact_count: artefactCount,
   };
 
-  await fs.mkdir(path.dirname(outPath), { recursive: true });
-  await fs.appendFile(outPath, JSON.stringify(record) + "\n", "utf8");
+  await appendFile(outPath, JSON.stringify(record) + "\n");
 }
