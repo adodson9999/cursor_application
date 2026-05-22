@@ -1,6 +1,5 @@
-import fs from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import os from "node:os";
-import path from "node:path";
 import process from "node:process";
 
 import type {
@@ -10,60 +9,75 @@ import type {
   Suite,
   TestCase,
   TestResult,
+  TestStep,
 } from "@playwright/test/reporter";
 
-import { BugContext, renderBugReport } from "./bug-md.js";
-import { appendBugEvent } from "./voc-jsonl.js";
-
-const REPORTS_DIR = path.resolve("reports/auto");
+import { type BugContext, renderBugMarkdown } from "./bug-md.js";
+import { appendBug } from "./voc-jsonl.js";
 
 /** Playwright reporter that emits a Markdown bug report for every non-passing test. */
-export default class PlaywrightBugReporter implements Reporter {
+export default class BugReporter implements Reporter {
   onBegin(_config: FullConfig, _suite: Suite): void {
-    // intentionally empty: no per-run setup needed
+    /* intentionally empty */
   }
 
-  onTestEnd(test: TestCase, result: TestResult): void {
+  async onTestEnd(test: TestCase, result: TestResult): Promise<void> {
     if (result.status === "passed" || result.status === "skipped") return;
-
-    void this.writeBugReport(test, result);
+    const ctx = this.buildContext(test, result);
+    const out = `reports/auto/bug-${Date.now()}-${test.id.replace(/[^a-z0-9]/gi, "_").slice(0, 60)}.md`;
+    await mkdir("reports/auto", { recursive: true });
+    await writeFile(out, renderBugMarkdown(ctx));
+    await appendBug(ctx);
   }
 
   onEnd(_result: FullResult): void {
-    // intentionally empty
+    /* intentionally empty */
   }
 
-  private async writeBugReport(
-    test: TestCase,
-    result: TestResult
-  ): Promise<void> {
-    await fs.mkdir(REPORTS_DIR, { recursive: true });
+  private buildContext(test: TestCase, result: TestResult): BugContext {
+    // Pull observer artefact paths off result.attachments by name convention.
+    const artefacts = Object.fromEntries(
+      result.attachments.map((a) => [a.name, a.path]),
+    );
 
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-    const safeId = test.id.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 60);
-    const reportPath = path.join(REPORTS_DIR, `bug-${timestamp}-${safeId}.md`);
+    // Flatten test step titles as repro steps (only leaf steps).
+    const steps = this.collectStepTitles(result.steps);
 
     const error = result.errors[0];
-    const ctx: BugContext = {
-      testId: test.id,
+
+    return {
       testTitle: test.title,
       testFile: test.location.file,
+      testId: test.id,
       status: result.status as BugContext["status"],
-      errorMessage: error?.message ?? "(no error message)",
-      errorStack: error?.stack,
+      error: {
+        message: error?.message ?? "(no error message)",
+        stack: error?.stack,
+      },
       durationMs: result.duration,
       startedAt: new Date(result.startTime).toISOString(),
-      observerArtifacts: {},
-      env: {
-        cursorVersion: process.env["CURSOR_VERSION"],
-        nodeVersion: process.version,
-        platform: os.platform(),
-        arch: os.arch(),
+      cursorVersion: process.env["CURSOR_VERSION"] ?? "unknown",
+      cursorPath: process.env["CURSOR_APP_PATH"] ?? "/Applications/Cursor.app",
+      observerArtefacts: {
+        fsWatch:      artefacts["fs-watch"],
+        mitmFlow:     artefacts["mitm-flow"],
+        perfSample:   artefacts["perf-sample"],
+        heapSnapshot: artefacts["heap-snapshot"],
+        logScrape:    artefacts["log-scrape"],
+        screenshot:   result.attachments.find((a) => a.contentType === "image/png")?.path,
+        trace:        result.attachments.find((a) => a.name === "trace")?.path,
       },
+      reproSteps: steps,
     };
+  }
 
-    const markdown = renderBugReport(ctx);
-    await fs.writeFile(reportPath, markdown, "utf8");
-    await appendBugEvent(ctx);
+  private collectStepTitles(steps: TestStep[], depth = 0): string[] {
+    if (depth > 5) return [];
+    const titles: string[] = [];
+    for (const step of steps) {
+      if (step.category === "test.step") titles.push(step.title);
+      titles.push(...this.collectStepTitles(step.steps, depth + 1));
+    }
+    return titles;
   }
 }
