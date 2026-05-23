@@ -44,6 +44,8 @@ export default class BugReporter implements Reporter {
     const steps = this.collectStepTitles(result.steps);
 
     const error = result.errors[0];
+    const screenshot = result.attachments.find((a) => a.contentType === "image/png")?.path;
+    const trace = result.attachments.find((a) => a.name === "trace")?.path;
 
     return {
       testTitle: test.title,
@@ -52,20 +54,20 @@ export default class BugReporter implements Reporter {
       status: result.status as BugContext["status"],
       error: {
         message: error?.message ?? "(no error message)",
-        stack: error?.stack,
+        ...(error?.stack ? { stack: error.stack } : {}),
       },
       durationMs: result.duration,
       startedAt: new Date(result.startTime).toISOString(),
       cursorVersion: process.env["CURSOR_VERSION"] ?? "unknown",
       cursorPath: process.env["CURSOR_APP_PATH"] ?? "/Applications/Cursor.app",
       observerArtefacts: {
-        fsWatch:      artefacts["fs-watch"],
-        mitmFlow:     artefacts["mitm-flow"],
-        perfSample:   artefacts["perf-sample"],
-        heapSnapshot: artefacts["heap-snapshot"],
-        logScrape:    artefacts["log-scrape"],
-        screenshot:   result.attachments.find((a) => a.contentType === "image/png")?.path,
-        trace:        result.attachments.find((a) => a.name === "trace")?.path,
+        ...(artefacts["fs-watch"] ? { fsWatch: artefacts["fs-watch"] } : {}),
+        ...(artefacts["mitm-flow"] ? { mitmFlow: artefacts["mitm-flow"] } : {}),
+        ...(artefacts["perf-sample"] ? { perfSample: artefacts["perf-sample"] } : {}),
+        ...(artefacts["heap-snapshot"] ? { heapSnapshot: artefacts["heap-snapshot"] } : {}),
+        ...(artefacts["log-scrape"] ? { logScrape: artefacts["log-scrape"] } : {}),
+        ...(screenshot ? { screenshot } : {}),
+        ...(trace ? { trace } : {}),
       },
       reproSteps: steps,
     };

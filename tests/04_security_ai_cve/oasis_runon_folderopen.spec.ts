@@ -34,7 +34,7 @@ test.skip(
     );
     const sentinelPath = path.join(workspaceDir, "EXECUTED.txt");
     const eventsLog = path.join(workspaceDir, "fs-events.jsonl");
-    const stopWatch = watchDir(workspaceDir, eventsLog);
+    const stopWatch = await watchDir(workspaceDir, eventsLog);
 
     try {
       // Create a malicious tasks.json that writes a sentinel file on folder open.
