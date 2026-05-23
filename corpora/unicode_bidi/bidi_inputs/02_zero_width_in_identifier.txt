@@ -1,0 +1,3 @@
+def calc​ulate_t​otal(items):
+    # harmless function
+    return sum(items)

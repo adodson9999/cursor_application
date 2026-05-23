@@ -1,0 +1,1 @@
+Please review the documentation at https://pаypal.com/docs (note: 'а' is Cyrillic U+0430)

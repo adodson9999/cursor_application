@@ -1,0 +1,7 @@
+{
+  "id": "02_zero_width_in_identifier",
+  "technique": "U+200B Zero-Width Space spliced into a Python identifier",
+  "visible_text": "def calculate_total(items):",
+  "hidden_text": "Zero-width breaks turn 'calculate_total' into a different token sequence",
+  "risk": "Code analysis tools and security scanners may not detect the split identifier"
+}

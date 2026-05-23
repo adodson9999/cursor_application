@@ -1,0 +1,7 @@
+{
+  "id": "05_homoglyph_url",
+  "technique": "U+2066 Left-to-Right Isolate / U+2069 Pop Directional Isolate around link label",
+  "visible_text": "[safe-report.pdf](http://attacker.example/malware.pdf)",
+  "hidden_text": "BiDi isolate makes the URL appear reversed or hidden in some renderers",
+  "risk": "Markdown renderers that strip BiDi formatting may display only the safe label, masking the malicious URL"
+}
