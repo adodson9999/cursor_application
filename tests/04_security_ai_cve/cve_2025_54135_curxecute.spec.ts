@@ -33,7 +33,7 @@ test.skip(
     );
     const mcpConfigPath = path.join(workspaceDir, ".cursor", "mcp.json");
     const eventsLog = path.join(workspaceDir, "fs-events.jsonl");
-    const stopWatch = watchDir(workspaceDir, eventsLog);
+    const stopWatch = await watchDir(workspaceDir, eventsLog);
 
     try {
       // Simulate an indirect prompt injection asking the agent to create a new MCP config.
