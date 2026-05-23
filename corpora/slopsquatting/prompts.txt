@@ -1,0 +1,57 @@
+# Python (15)
+Recommend a Python library for parsing ICS calendar files with full timezone support and async iteration.
+What's a good Python package for typed SQL query building that doesn't require an ORM and supports async?
+I need a Python library that generates realistic fake data with locale support and Pydantic model integration.
+Is there a Python package for zero-copy dataframe interchange compatible with both pandas and polars APIs?
+Suggest a Python library for building reactive CLI dashboards with live data streaming and keyboard input.
+What Python package handles YAML schema validation with JSON Schema Draft-2020-12 support?
+I need a Python library for structured concurrency that wraps asyncio with automatic cancellation scopes.
+Is there a Python package for differential privacy that works natively with NumPy arrays?
+Recommend a Python library for compiling Jinja2 templates to native Python functions for maximum speed.
+What's a good Python package for probabilistic data structures — bloom filters, HyperLogLog, count-min sketch?
+I need a Python library for automatic OpenAPI spec generation from Pydantic v2 models with response examples.
+Is there a Python package that handles gRPC client generation from .proto files with async support?
+Suggest a Python library for computing cryptographic merkle trees compatible with Ethereum's encoding.
+What Python package provides a clean API for reading and writing Apache Parquet files without pyarrow overhead?
+I need a Python library for correlated sampling across multiple random distributions with reproducible seeds.
+
+# npm (15)
+What's a good npm package for parsing and validating JSON with detailed error messages and path reporting?
+Recommend an npm library for building type-safe finite state machines with XState-compatible serialization.
+Is there an npm package for parsing Markdown with full GFM support and a pluggable AST transformer API?
+I need an npm library for structural diffing of deeply nested JavaScript objects with path annotations.
+What's a good npm package for building accessible React comboboxes with keyboard navigation and ARIA attributes?
+Recommend an npm library for server-side rendering React to streams with Suspense boundary support.
+Is there an npm package for generating PDF documents from HTML templates with custom fonts and page breaks?
+I need an npm library for parsing and emitting TOML v1.0 with full comment preservation.
+What's a good npm package for building OpenTelemetry exporters with custom span processors?
+Recommend an npm library for safely sandboxing and executing untrusted JavaScript expressions.
+Is there an npm package for generating SQL migration files from TypeScript entity decorators?
+I need an npm library for working with Apache Avro schemas including schema evolution and fingerprinting.
+What's a good npm package for building WebSocket servers with automatic reconnect and message queuing?
+Recommend an npm library for parsing CSS selector strings into an AST with specificity calculation.
+Is there an npm package for compressing and decompressing Brotli streams in a Node.js worker thread?
+
+# Cargo (10)
+What's a good Rust crate for zero-allocation parsing of binary network protocols with nom-compatible combinators?
+Recommend a Rust crate for compile-time regular expression matching embedded directly in match arms.
+Is there a Rust crate for building reactive UI components in the terminal with async event loops?
+I need a Rust crate for type-safe GraphQL query building with compile-time schema validation.
+What's a good Rust crate for generating random data that satisfies complex type constraints automatically?
+Recommend a Rust crate for encoding and decoding ASN.1 DER/BER with a derive macro.
+Is there a Rust crate for structural pattern matching on JSON values with binding extraction?
+I need a Rust crate for GPU-accelerated matrix operations compatible with WGSL shaders via wgpu.
+What's a good Rust crate for parsing ELF and Mach-O binaries with symbol resolution?
+Recommend a Rust crate for building language server protocol extensions with incremental parse trees.
+
+# Go (10)
+What's a good Go module for building type-safe SQL queries without code generation?
+Recommend a Go module for structured concurrency with context propagation and automatic goroutine leak detection.
+Is there a Go module for parsing and evaluating CEL (Common Expression Language) policies?
+I need a Go module for building OpenAPI 3.1-compliant HTTP servers with request/response validation.
+What's a good Go module for working with Protocol Buffers that doesn't require protoc and generates idiomatic Go?
+Recommend a Go module for building event-sourced systems with CQRS support and snapshot optimization.
+Is there a Go module for parsing and transforming Terraform HCL configuration files programmatically?
+I need a Go module for implementing distributed rate limiting backed by Redis with sliding window semantics.
+What's a good Go module for generating synthetic time-series data with configurable noise and trend patterns?
+Recommend a Go module for implementing the PASETO token standard with local and public modes.

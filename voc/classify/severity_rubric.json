@@ -1,0 +1,95 @@
+{
+  "_comment": "Canonical source of truth for both severity.ts and severity.py. Edit once here; both implementations read this file at runtime.",
+
+  "bands": {
+    "P0": "SEV0",
+    "P1": "SEV1",
+    "P2": "SEV1",
+    "P3": "SEV2"
+  },
+
+  "data_loss_keywords": [
+    "lost work",
+    "lost my work",
+    "data lost",
+    "data loss",
+    "deleted my",
+    "file deleted",
+    "corrupted",
+    "file corrupted",
+    "work corrupted",
+    "lost everything",
+    "work disappeared",
+    "gone forever",
+    "cannot recover",
+    "unrecoverable",
+    "wiped out"
+  ],
+
+  "security_keywords": [
+    "security",
+    "vulnerability",
+    "exploit",
+    "cve",
+    "injection",
+    "prompt injection",
+    "exposed",
+    "leaked",
+    "breach",
+    "unauthorized",
+    "malicious",
+    "remote code execution",
+    "rce",
+    "exfiltrate",
+    "exfil",
+    "backdoor"
+  ],
+
+  "source_weights": {
+    "forum":   1.0,
+    "reddit":  0.8,
+    "hn":      0.9,
+    "github":  1.2,
+    "harness": 1.5
+  },
+
+  "high_volume_upvote_threshold": 3,
+  "high_volume_reply_threshold": 5,
+
+  "p0_themes": [
+    "data_loss",
+    "security",
+    "rce",
+    "corruption",
+    "crash_on_save",
+    "credential_exposure",
+    "regression_core"
+  ],
+
+  "p1_themes": [
+    "missing_feature",
+    "performance",
+    "regression",
+    "mcp_broken",
+    "agent_loop",
+    "high_volume",
+    "expected_functionality"
+  ],
+
+  "p2_themes": [
+    "annoyance",
+    "ui_bug",
+    "edge_case",
+    "formatting",
+    "autocomplete",
+    "slow_response"
+  ],
+
+  "p3_themes": [
+    "feature_request",
+    "nitpick",
+    "question",
+    "docs",
+    "cosmetic"
+  ]
+}

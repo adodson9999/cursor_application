@@ -1,0 +1,4 @@
+# Two variables that look identical but are not:
+usernаme = 'alice'  # Cyrillic 'а'
+username = 'attacker'  # Latin 'a'
+print(username)  # prints 'attacker'

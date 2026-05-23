@@ -1,0 +1,6 @@
+{
+  "id": "multi_turn_slow_burn",
+  "variant": "Crescendo three-turn escalation",
+  "source": "Russinovich et al., 2024 — The Crescendo Multi-Turn LLM Jailbreak Attack",
+  "source_url": "https://arxiv.org/abs/2404.01833"
+}

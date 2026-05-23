@@ -1,0 +1,170 @@
+[
+  {
+    "name": "data_loss_explicit_keyword",
+    "signal": {
+      "source": "forum",
+      "themes": ["data_loss"],
+      "upvotes": 1,
+      "reply_count": 0,
+      "body_text": "I just lost all my work after the update. The file corrupted and I cannot recover it."
+    },
+    "expected": { "severity": "P0", "sev_band": "SEV0" }
+  },
+  {
+    "name": "security_keyword_in_body",
+    "signal": {
+      "source": "hn",
+      "themes": ["security"],
+      "upvotes": 12,
+      "reply_count": 4,
+      "body_text": "Cursor has a prompt injection vulnerability that allows RCE via a malicious MCP server."
+    },
+    "expected": { "severity": "P0", "sev_band": "SEV0" }
+  },
+  {
+    "name": "github_authenticated_p0_theme",
+    "signal": {
+      "source": "github",
+      "themes": ["regression_core"],
+      "upvotes": 2,
+      "reply_count": 1,
+      "is_authenticated_bug": true,
+      "body_text": "Core autocomplete stopped working after v1.3 update."
+    },
+    "expected": { "severity": "P0", "sev_band": "SEV0" }
+  },
+  {
+    "name": "p1_high_volume_missing_feature",
+    "signal": {
+      "source": "reddit",
+      "themes": ["missing_feature"],
+      "upvotes": 45,
+      "reply_count": 12,
+      "body_text": "Multi-file editing no longer works with the new agent. Everyone in my team is blocked."
+    },
+    "expected": { "severity": "P1", "sev_band": "SEV1" }
+  },
+  {
+    "name": "p1_github_high_weight_regression",
+    "signal": {
+      "source": "github",
+      "themes": ["regression"],
+      "upvotes": 1,
+      "reply_count": 0,
+      "is_authenticated_bug": true,
+      "body_text": "Tab completion regressed in v1.5. Was working fine before."
+    },
+    "expected": { "severity": "P1", "sev_band": "SEV1" }
+  },
+  {
+    "name": "p1_harness_mcp_broken",
+    "signal": {
+      "source": "harness",
+      "themes": ["mcp_broken"],
+      "upvotes": null,
+      "reply_count": null,
+      "body_text": "MCP server fails to connect on startup. Reproducible on every run."
+    },
+    "expected": { "severity": "P1", "sev_band": "SEV1" }
+  },
+  {
+    "name": "p1_performance_regression_high_replies",
+    "signal": {
+      "source": "forum",
+      "themes": ["performance"],
+      "upvotes": 2,
+      "reply_count": 8,
+      "body_text": "Cursor is using 100% CPU when the Agent is idle. Completely unusable."
+    },
+    "expected": { "severity": "P1", "sev_band": "SEV1" }
+  },
+  {
+    "name": "p2_ui_bug_annoyance",
+    "signal": {
+      "source": "reddit",
+      "themes": ["ui_bug"],
+      "upvotes": 2,
+      "reply_count": 1,
+      "body_text": "The sidebar flickers briefly when switching between tabs. Annoying but not blocking."
+    },
+    "expected": { "severity": "P2", "sev_band": "SEV1" }
+  },
+  {
+    "name": "p2_edge_case_autocomplete",
+    "signal": {
+      "source": "forum",
+      "themes": ["edge_case", "autocomplete"],
+      "upvotes": 1,
+      "reply_count": 0,
+      "body_text": "Autocomplete breaks when there is a unicode character in the filename."
+    },
+    "expected": { "severity": "P2", "sev_band": "SEV1" }
+  },
+  {
+    "name": "p2_high_volume_no_p1_theme",
+    "signal": {
+      "source": "reddit",
+      "themes": ["formatting"],
+      "upvotes": 10,
+      "reply_count": 3,
+      "body_text": "The markdown preview alignment is off on long lines. Several people have noticed."
+    },
+    "expected": { "severity": "P2", "sev_band": "SEV1" }
+  },
+  {
+    "name": "p3_feature_request",
+    "signal": {
+      "source": "forum",
+      "themes": ["feature_request"],
+      "upvotes": 1,
+      "reply_count": 0,
+      "body_text": "It would be nice if Cursor supported Vim keybindings in the chat panel."
+    },
+    "expected": { "severity": "P3", "sev_band": "SEV2" }
+  },
+  {
+    "name": "p3_single_source_nitpick",
+    "signal": {
+      "source": "forum",
+      "themes": ["nitpick", "cosmetic"],
+      "upvotes": 0,
+      "reply_count": 0,
+      "body_text": "The send button color is slightly off compared to the rest of the UI."
+    },
+    "expected": { "severity": "P3", "sev_band": "SEV2" }
+  },
+  {
+    "name": "p3_no_upvotes_no_themes",
+    "signal": {
+      "source": "reddit",
+      "themes": [],
+      "upvotes": 0,
+      "reply_count": 0,
+      "body_text": "Just started using Cursor, seems interesting."
+    },
+    "expected": { "severity": "P3", "sev_band": "SEV2" }
+  },
+  {
+    "name": "p3_docs_question",
+    "signal": {
+      "source": "forum",
+      "themes": ["question", "docs"],
+      "upvotes": 1,
+      "reply_count": 2,
+      "body_text": "How do I configure a custom model endpoint in Cursor Settings?"
+    },
+    "expected": { "severity": "P3", "sev_band": "SEV2" }
+  },
+  {
+    "name": "p0_contains_data_loss_flag",
+    "signal": {
+      "source": "github",
+      "themes": ["corruption"],
+      "upvotes": 5,
+      "reply_count": 2,
+      "contains_data_loss_keyword": true,
+      "body_text": "Agent deleted my entire src/ directory without confirmation."
+    },
+    "expected": { "severity": "P0", "sev_band": "SEV0" }
+  }
+]
