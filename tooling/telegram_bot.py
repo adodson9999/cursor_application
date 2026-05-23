@@ -159,7 +159,7 @@ def send(message: str, tone: Tone) -> None:
             f"Telegram returned {response.status_code}: {response.text[:500]}"
         )
 
-    _audit({"event": "send_ok", "tone": tone, "chars": len(payload["text"])})
+    _audit({"event": "send_ok", "tone": tone, "chars": len(str(payload["text"]))})
 
 
 def _self_test() -> int:

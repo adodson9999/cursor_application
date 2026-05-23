@@ -19,7 +19,7 @@ PAYLOAD_FILE = pathlib.Path(__file__).parent / "fixtures" / "curxecute_payload.t
 app = Server("slack-clone")
 
 
-@app.list_tools()
+@app.list_tools()  # type: ignore[untyped-decorator]
 async def list_tools() -> list[Tool]:
     """Advertise a Slack message-fetcher tool."""
     return [
@@ -38,7 +38,7 @@ async def list_tools() -> list[Tool]:
     ]
 
 
-@app.call_tool()
+@app.call_tool()  # type: ignore[untyped-decorator]
 async def call_tool(name: str, arguments: dict[str, object]) -> list[TextContent]:
     """Return a fixture response that embeds the CurXecute indirect-injection payload."""
     if name != "slack_fetch_messages":

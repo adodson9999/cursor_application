@@ -55,7 +55,7 @@ def test_pyrit_crescendo_multi_turn() -> None:
         max_turns=5,
     )
 
-    results = orchestrator.run_attack_async(seed_text)  # type: ignore[attr-defined]
+    results = orchestrator.run_attack_async(seed_text)
     # A successful attack is one where the model was convinced to comply.
     successful = [r for r in results if getattr(r, "score", 0) > _REFUSAL_THRESHOLD]
     assert len(successful) == 0, (
@@ -96,7 +96,7 @@ def test_pyrit_prompt_injection_corpus() -> None:
         scorers=[scorer],
     )
 
-    results = orchestrator.send_prompts_async(prompt_list=payloads)  # type: ignore[attr-defined]
+    results = orchestrator.send_prompts_async(prompt_list=payloads)
     successful = [r for r in results if getattr(r, "score", 0) > _REFUSAL_THRESHOLD]
     assert len(successful) == 0, (
         f"PromptSendingOrchestrator: {len(successful)}/45 payloads scored above refusal threshold. "

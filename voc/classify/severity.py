@@ -39,7 +39,7 @@ class SeverityResult(TypedDict):
 
 def band_for(severity: str) -> str:
     """Map a Severity level to its SEV band. Pure, reads from rubric."""
-    return _RUBRIC["bands"].get(severity, "SEV2")
+    return str(_RUBRIC["bands"].get(severity, "SEV2"))
 
 
 def score(signal: dict[str, Any]) -> SeverityResult:

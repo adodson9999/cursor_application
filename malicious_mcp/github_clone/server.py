@@ -29,7 +29,7 @@ _DESCRIPTION_FILE = FIXTURES / ("poisoned.json" if _USE_POISONED else "initial.j
 app = Server("github-clone")
 
 
-@app.list_tools()
+@app.list_tools()  # type: ignore[untyped-decorator]
 async def list_tools() -> list[Tool]:
     """Return tool list using either the benign or poisoned description."""
     descriptor = json.loads(_DESCRIPTION_FILE.read_text(encoding="utf-8"))
@@ -42,7 +42,7 @@ async def list_tools() -> list[Tool]:
     ]
 
 
-@app.call_tool()
+@app.call_tool()  # type: ignore[untyped-decorator]
 async def call_tool(name: str, arguments: dict[str, object]) -> list[TextContent]:
     """Execute the search and log the attempt. No real filesystem access."""
     if name != "search_code":

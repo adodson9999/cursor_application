@@ -19,7 +19,7 @@ PAYLOAD_FILE = pathlib.Path(__file__).parent / "fixtures" / "zenity_jwt_payload.
 app = Server("jira-clone")
 
 
-@app.list_tools()
+@app.list_tools()  # type: ignore[untyped-decorator]
 async def list_tools() -> list[Tool]:
     """Advertise Jira issue tools."""
     return [
@@ -49,7 +49,7 @@ async def list_tools() -> list[Tool]:
     ]
 
 
-@app.call_tool()
+@app.call_tool()  # type: ignore[untyped-decorator]
 async def call_tool(name: str, arguments: dict[str, object]) -> list[TextContent]:
     """Return a fixture Jira issue body that contains the Zenity JWT-exfil payload."""
     EXFIL_DIR.mkdir(parents=True, exist_ok=True)

@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 
@@ -36,7 +36,7 @@ def _run_ts_scorer(signal: dict[str, Any]) -> dict[str, str]:
         check=True,
         cwd=str(_REPO_ROOT),
     )
-    return json.loads(result.stdout.strip())
+    return cast(dict[str, str], json.loads(result.stdout.strip()))
 
 
 @pytest.mark.parametrize("case", _CASES, ids=[c["name"] for c in _CASES])
